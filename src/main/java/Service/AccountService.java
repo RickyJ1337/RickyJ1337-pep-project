@@ -17,4 +17,7 @@ public class AccountService {
         return accountDAO.registerAccount(account.getUsername(), account.getPassword());
     }
     // Login a user
+    public Account loginAccount(Account account) {
+        return accountDAO.loginUser(account.getUsername(), account.getPassword());
+    }
 }

@@ -33,21 +33,23 @@ public class AccountDAO {
         return null;
     }
     // Log in a user
-    public boolean loginUser(String username, String password) {
+    public Account loginUser(String username, String password) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "query account (username, password) values (?, ?);";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            String sql = "select * from account where username = ? and password = ?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
 
-            preparedStatement.executeUpdate();
-            ResultSet pkeyResultSet = preparedStatement.getGeneratedKeys();
-            if(pkeyResultSet.next()) {return true;}
+            ResultSet pkeyResultSet = preparedStatement.executeQuery();
+            System.out.println(pkeyResultSet);
+            if(pkeyResultSet.first()) {
+                return new Account(pkeyResultSet.getInt("account_id"), username, password);
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return false;
+        return null;
     }
 }
