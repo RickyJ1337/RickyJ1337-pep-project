@@ -8,6 +8,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import netscape.javascript.JSException;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -37,7 +39,7 @@ public class SocialMediaController {
         app.post("/messages", this::createMessageHandler);
         app.get("/messages/{message_id}", this::getMessageByIDHandler);
         app.delete("/messages/{message_id}", this::deleteMessageByIDHandler);
-        app.put("/messages/{message_id}", this::exampleHandler);
+        app.patch("/messages/{message_id}", this::updateMessageTextHandler);
         app.get("accounts/{account_id}/messages/", this::exampleHandler);
         return app;
     }
@@ -108,6 +110,20 @@ public class SocialMediaController {
         }
         else {
             mapper.writeValueAsString(retrievedMessage);
+        }
+    }
+
+    private void updateMessageTextHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        int message_id = Integer.parseInt(Objects.requireNonNull(ctx.pathParam("message_id")));
+        Message message = mapper.readValue(ctx.body(), Message.class);
+        String message_text = message.getMessage_text();
+        Message updatedMessage = messageService.updateMessageText(message_id, message_text);
+        if (updatedMessage != null) {
+            ctx.json(mapper.writeValueAsString(updatedMessage));
+        }
+        else {
+            ctx.status(400);
         }
     }
     private void exampleHandler(Context context) {

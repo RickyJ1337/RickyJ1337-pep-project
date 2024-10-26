@@ -46,7 +46,7 @@ public class MessageDAO {
             String sql = "select * from message;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet rs = preparedStatement.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 Message message = new Message(rs.getInt("message_id"), 
                 rs.getInt("posted_by"), 
                 rs.getString("message_text"),
@@ -68,7 +68,7 @@ public class MessageDAO {
             preparedStatement.setInt(1, message_id);
 
             ResultSet rs = preparedStatement.executeQuery();
-            while(rs.next()) {
+            if (rs.next()) {
                 Message message = new Message(rs.getInt(message_id),
                 rs.getInt("posted_by"), 
                 rs.getString("message_text"),
@@ -92,7 +92,7 @@ public class MessageDAO {
             preparedStatement.executeUpdate();
 
             ResultSet rs = preparedStatement.getGeneratedKeys();
-            while(rs.next()) {
+            if (rs.next()) {
                 Message message = new Message(rs.getInt(message_id),
                 rs.getInt("posted_by"), 
                 rs.getString("message_text"),
@@ -105,7 +105,36 @@ public class MessageDAO {
         return new Message();
     }
     // Update message by ID
-    public Message updateMessageByID() {
+    public Message updateMessageText(int message_id, String message_text) {
+        Connection connection = ConnectionUtil.getConnection();
+        if (message_text == "") {return null;}
+        if (message_text.length() > 255) {return null;}
+        try {
+            String sql = "update message set message_text = ? where message_id = ?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setString(1, message_text);
+            preparedStatement.setInt(2, message_id);
+
+            preparedStatement.executeUpdate();
+
+            String sql2 = "select * from message where message_id = ?;";
+            PreparedStatement selectStatement = connection.prepareStatement(sql2);
+
+            selectStatement.setInt(1, message_id);
+
+            ResultSet rs = selectStatement.executeQuery();
+            System.out.println(rs);
+            if (rs.next()) {
+                Message message = new Message(rs.getInt(message_id),
+                rs.getInt("posted_by"), 
+                rs.getString("message_text"),
+                rs.getLong("time_posted_epoch"));
+                return message;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return null;
     }
     // Retrieve messages by user

@@ -31,6 +31,8 @@ public class MessageService {
         return messageDAO.deleteMessageByID(message_id);
     }
     // Update message by ID
-
+    public Message updateMessageText(int message_id, String message_text) {
+        return messageDAO.updateMessageText(message_id, message_text);
+    }
     // Retrieve messages by user
 }
