@@ -100,7 +100,15 @@ public class SocialMediaController {
     }
 
     private void deleteMessageByIDHandler(Context ctx) throws JsonProcessingException {
-
+        ObjectMapper mapper = new ObjectMapper();
+        int message_id = Integer.parseInt(Objects.requireNonNull(ctx.pathParam("message_id")));
+        Message retrievedMessage = messageService.getMessageByID(message_id);
+        if (retrievedMessage.getMessage_text() != null) {
+            ctx.json(mapper.writeValueAsString(retrievedMessage));
+        }
+        else {
+            mapper.writeValueAsString(retrievedMessage);
+        }
     }
     private void exampleHandler(Context context) {
         context.json("sample text");

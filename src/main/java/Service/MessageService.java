@@ -27,7 +27,9 @@ public class MessageService {
         return messageDAO.getMessageByID(message_id);
     }
     // Delete message by ID
-
+    public Message deleteMessageByID(int message_id) {
+        return messageDAO.deleteMessageByID(message_id);
+    }
     // Update message by ID
 
     // Retrieve messages by user
