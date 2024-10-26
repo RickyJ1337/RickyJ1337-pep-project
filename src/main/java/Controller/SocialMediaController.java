@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -34,10 +35,10 @@ public class SocialMediaController {
         app.post("/register", this::registerAccountHandler);
         app.get("/messages", this::getAllMessagesHandler);
         app.post("/messages", this::createMessageHandler);
-        app.get("/messages/id", this::exampleHandler);
-        app.delete("/messages/id", this::exampleHandler);
-        app.put("/messages/id", this::exampleHandler);
-        app.get("accounts/user/messages/", this::exampleHandler);
+        app.get("/messages/{message_id}", this::getMessageByIDHandler);
+        app.delete("/messages/{message_id}", this::deleteMessageByIDHandler);
+        app.put("/messages/{message_id}", this::exampleHandler);
+        app.get("accounts/{account_id}/messages/", this::exampleHandler);
         return app;
     }
 
@@ -45,7 +46,7 @@ public class SocialMediaController {
      * This is an example handler for an example endpoint.
      * @param context The Javalin Context object manages information about both the HTTP request and response.
      */
-    private void registerAccountHandler(Context ctx) throws JsonProcessingException{
+    private void registerAccountHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Account account = mapper.readValue(ctx.body(), Account.class);
         Account addedAccount = accountService.registerAccount(account);
@@ -57,7 +58,7 @@ public class SocialMediaController {
         }
     }
 
-    private void loginAccountHandler(Context ctx) throws JsonProcessingException{
+    private void loginAccountHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Account account = mapper.readValue(ctx.body(), Account.class);
         Account loggedInAccount = accountService.loginAccount(account);
@@ -69,7 +70,7 @@ public class SocialMediaController {
         }
     }
 
-    private void createMessageHandler(Context ctx) throws JsonProcessingException{
+    private void createMessageHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Message message = mapper.readValue(ctx.body(), Message.class);
         Message postedMessage = messageService.postMessage(message);
@@ -84,6 +85,22 @@ public class SocialMediaController {
     private void getAllMessagesHandler(Context ctx) {
         List<Message> messages = messageService.getAllMessages();
         ctx.json(messages);
+    }
+
+    private void getMessageByIDHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        int message_id = Integer.parseInt(Objects.requireNonNull(ctx.pathParam("message_id")));
+        Message retrievedMessage = messageService.getMessageByID(message_id);
+        if (retrievedMessage.getMessage_text() != null) {
+            ctx.json(mapper.writeValueAsString(retrievedMessage));
+        }
+        else {
+            mapper.writeValueAsString(retrievedMessage);
+        }
+    }
+
+    private void deleteMessageByIDHandler(Context ctx) throws JsonProcessingException {
+
     }
     private void exampleHandler(Context context) {
         context.json("sample text");

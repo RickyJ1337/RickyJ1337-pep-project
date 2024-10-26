@@ -23,7 +23,9 @@ public class MessageService {
         return messageDAO.getAllMessages();
     }
     // Retrieve message by ID
-
+    public Message getMessageByID(int message_id) {
+        return messageDAO.getMessageByID(message_id);
+    }
     // Delete message by ID
 
     // Update message by ID
