@@ -40,7 +40,7 @@ public class SocialMediaController {
         app.get("/messages/{message_id}", this::getMessageByIDHandler);
         app.delete("/messages/{message_id}", this::deleteMessageByIDHandler);
         app.patch("/messages/{message_id}", this::updateMessageTextHandler);
-        app.get("accounts/{account_id}/messages/", this::exampleHandler);
+        app.get("accounts/{account_id}/messages/", this::getMessagesByUserHandler);
         return app;
     }
 
@@ -126,8 +126,11 @@ public class SocialMediaController {
             ctx.status(400);
         }
     }
-    private void exampleHandler(Context context) {
-        context.json("sample text");
+    private void getMessagesByUserHandler(Context ctx) {
+        ObjectMapper mapper = new ObjectMapper();
+        int account_id = Integer.parseInt(Objects.requireNonNull(ctx.pathParam("account_id")));
+        List<Message> userMessages = messageService.getMessagesByUser(account_id);
+        ctx.json(userMessages);
     }
 
 
