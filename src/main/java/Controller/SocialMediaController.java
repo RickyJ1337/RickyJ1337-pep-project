@@ -8,7 +8,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import netscape.javascript.JSException;
 
 import java.util.List;
 import java.util.Objects;
@@ -127,7 +126,6 @@ public class SocialMediaController {
         }
     }
     private void getMessagesByUserHandler(Context ctx) {
-        ObjectMapper mapper = new ObjectMapper();
         int account_id = Integer.parseInt(Objects.requireNonNull(ctx.pathParam("account_id")));
         List<Message> userMessages = messageService.getMessagesByUser(account_id);
         ctx.json(userMessages);

@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 public class MessageDAO {
-    // Method here to create new message and add it to the database
+    // Post new message to the database
     public Message postMessage(Message message) {
         Connection connection = ConnectionUtil.getConnection();
 
@@ -37,7 +37,7 @@ public class MessageDAO {
         }
         return null;
     }
-    // Method here to retrieve messages
+    // Get all existing messages from the database
     public List<Message> getAllMessages() {
         Connection connection = ConnectionUtil.getConnection();
         List<Message> messages = new ArrayList<>();

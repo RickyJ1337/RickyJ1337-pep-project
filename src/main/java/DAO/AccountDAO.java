@@ -33,7 +33,7 @@ public class AccountDAO {
         }
         return null;
     }
-    // Log in a user
+    // Login a user
     public Account loginUser(Account account) {
         String username = account.getUsername();
         String password = account.getPassword();
